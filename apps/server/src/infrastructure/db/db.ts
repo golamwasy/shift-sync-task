@@ -84,8 +84,14 @@ export async function cleanupOldData() {
   threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
   try {
-    // Delete old tasks first (due to foreign key)
+    // Delete old resources first (child of projects)
+    await db.delete(resources).where(lt(resources.createdAt, threeDaysAgo));
+
+    // Delete old tasks (child of projects/users)
     await db.delete(tasks).where(lt(tasks.createdAt, threeDaysAgo));
+
+    // Delete old projects (child of users)
+    await db.delete(projects).where(lt(projects.createdAt, threeDaysAgo));
     
     // Delete old users (except the default one)
     const DEFAULT_USER_ID = '00000000-0000-0000-0000-000000000001';
@@ -95,8 +101,11 @@ export async function cleanupOldData() {
         sql`${users.id}::text != ${DEFAULT_USER_ID}`
       )
     );
+
+    // Reset old AI usage counts
+    await db.delete(aiUsage).where(lt(aiUsage.lastRequestAt, threeDaysAgo));
     
-    console.log(`Cleanup complete. Deleted old tasks and users.`);
+    console.log(`Cleanup complete. Deleted old sessions, tasks, projects, and resources.`);
   } catch (error) {
     console.error('Error during data cleanup:', error);
   }
