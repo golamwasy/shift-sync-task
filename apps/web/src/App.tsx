@@ -6,6 +6,7 @@ import { api } from './lib/api';
 import { CommandBar } from './components/CommandBar';
 import { TaskCard } from './components/TaskCard';
 import { ProjectCard } from './components/ProjectCard';
+import { GanttChart } from './components/GanttChart';
 import { ConfirmDialog } from './components/ConfirmDialog';
 
 const getOrCreateUserId = () => {
@@ -138,6 +139,22 @@ function App() {
       setSelectedTaskIds(new Set());
     });
   };
+  const [riskAnalysis, setRiskAnalysis] = useState<string | null>(null);
+  const [isAssessingRisk, setIsAssessingRisk] = useState(false);
+
+  const handleAssessRisk = async () => {
+    if (!selectedProjectId) return;
+    setIsAssessingRisk(true);
+    try {
+      const risk = await api.assessRisk(selectedProjectId, USER_ID);
+      setRiskAnalysis(risk);
+    } catch (err: any) {
+      setAppError(err.message);
+    } finally {
+      setIsAssessingRisk(false);
+    }
+  };
+
   const handleProjectPlanned = (project: Project, newTasks: Task[]) => {
     setProjects(prev => [project, ...prev]);
     setTasks(prev => [...newTasks, ...prev]);
@@ -207,6 +224,7 @@ function App() {
           
           <CommandBar 
             userId={USER_ID}
+            activeView={activeView}
             onParsed={(data) => {
               setPendingParsed(data);
             }} 
@@ -262,16 +280,53 @@ function App() {
                   {selectedProjectId ? projects.find(p => p.id === selectedProjectId)?.name : 'Upcoming Events'}
                 </h2>
                 {selectedProjectId && (
-                  <button 
-                    onClick={() => setSelectedProjectId(null)}
-                    className="text-[10px] font-black text-indigo-400 hover:text-indigo-300 transition-colors uppercase tracking-widest"
-                  >
-                    View All
-                  </button>
+                  <>
+                    <button 
+                      onClick={() => setSelectedProjectId(null)}
+                      className="text-[10px] font-black text-indigo-400 hover:text-indigo-300 transition-colors uppercase tracking-widest"
+                    >
+                      View All
+                    </button>
+                    <div className="h-4 w-[1px] bg-white/10"></div>
+                    <button 
+                      onClick={handleAssessRisk}
+                      disabled={isAssessingRisk}
+                      className="flex items-center gap-2 text-[10px] font-black text-emerald-400 hover:text-emerald-300 transition-colors uppercase tracking-widest disabled:opacity-50"
+                    >
+                      <Brain className={`w-3 h-3 ${isAssessingRisk ? 'animate-pulse' : ''}`} />
+                      {isAssessingRisk ? 'Analyzing Risks...' : 'AI Risk Analysis'}
+                    </button>
+                  </>
                 )}
               </div>
               <span className="text-[10px] font-black bg-white/5 px-3 py-1 rounded-full text-slate-400 border border-white/5">{filteredTasks.length} Total</span>
             </div>
+
+            {riskAnalysis && selectedProjectId && (
+              <div className="mb-10 p-8 rounded-[2rem] bg-indigo-500/5 border border-indigo-500/10 relative overflow-hidden reveal-item">
+                <div className="absolute top-0 right-0 p-4">
+                  <button onClick={() => setRiskAnalysis(null)} className="text-slate-500 hover:text-white transition-colors">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                    <Brain className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-white uppercase tracking-widest">AI Risk Assessment</h3>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Predictive Bottleneck Analysis</p>
+                  </div>
+                </div>
+                <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap font-medium">
+                  {riskAnalysis}
+                </div>
+              </div>
+            )}
+
+            {selectedProjectId && filteredTasks.length > 0 && (
+              <GanttChart tasks={filteredTasks} />
+            )}
 
             {filteredTasks.length === 0 ? (
                <div className="text-center py-20 reveal-item">

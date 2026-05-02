@@ -80,6 +80,13 @@ export const api = {
     return json.data;
   },
 
+  async assessRisk(projectId: string, userId: string): Promise<string> {
+    const res = await fetch(`${API_URL}/projects/${projectId}/risk?userId=${userId}`);
+    if (!res.ok) throw new Error('Risk assessment failed');
+    const json = await res.json();
+    return json.risk;
+  },
+
   async fetchProjects(userId: string): Promise<Project[]> {
     const res = await fetch(`${API_URL}/projects?userId=${userId}`);
     if (!res.ok) throw new Error('Failed to fetch projects');

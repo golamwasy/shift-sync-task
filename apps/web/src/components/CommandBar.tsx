@@ -7,9 +7,10 @@ interface CommandBarProps {
   onProjectPlanned: (project: any, tasks: any[]) => void;
   onLoading?: (loading: boolean) => void;
   userId: string;
+  activeView: 'tasks' | 'projects';
 }
 
-export function CommandBar({ onParsed, onProjectPlanned, onLoading, userId }: CommandBarProps) {
+export function CommandBar({ onParsed, onProjectPlanned, onLoading, userId, activeView }: CommandBarProps) {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +22,9 @@ export function CommandBar({ onParsed, onProjectPlanned, onLoading, userId }: Co
     setError(null);
     try {
       const lowerText = inputText.toLowerCase().trim();
-      if (lowerText.startsWith('plan') || lowerText.startsWith('project')) {
+      const isProjectCommand = lowerText.startsWith('plan') || lowerText.startsWith('project') || activeView === 'projects';
+      
+      if (isProjectCommand) {
         const { project, tasks } = await api.planProject(inputText, userId);
         onProjectPlanned(project, tasks);
       } else {
