@@ -1,5 +1,5 @@
 import type { Task } from '@shift-sync/shared';
-import { CheckCircle2, Clock, Calendar as CalendarIcon, Trash2, Video, ExternalLink, Hash } from 'lucide-react';
+import { CheckCircle2, Clock, Calendar as CalendarIcon, Trash2, Video, Hash } from 'lucide-react';
 import { formatDistanceToNow, isPast } from 'date-fns';
 
 interface TaskCardProps {

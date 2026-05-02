@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Sparkles, Loader2, Calendar, Clock, Video, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 
 interface TaskData {

@@ -16,7 +16,6 @@ function App() {
   const [isThinking, setIsThinking] = useState(false);
   const [appError, setAppError] = useState<string | null>(null);
   const [pendingParsed, setPendingParsed] = useState<{ title: string; category: string; scheduledAt?: string }[]>([]);
-  const [currentConfirmIndex, setCurrentConfirmIndex] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
 
   const loadTasks = useCallback(async () => {
@@ -59,40 +58,11 @@ function App() {
       
       // Clear queue
       setPendingParsed([]);
-      setCurrentConfirmIndex(0);
     } catch (e: any) {
       setAppError(e.message);
     } finally {
       setIsCreating(false);
     }
-  };
-
-  const downloadIcs = (tasksToExport: Task[]) => {
-    if (tasksToExport.length === 0) return;
-    const events: ics.EventAttributes[] = tasksToExport.map(task => {
-      let description = `Category: ${task.category}`;
-      let location = task.meetingLink || '';
-      if (task.meetingLink) description += `\n\nJoin: ${task.meetingLink}`;
-      const date = task.scheduledAt ? new Date(task.scheduledAt) : new Date();
-      return {
-        title: task.title,
-        description,
-        location,
-        start: [date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes()],
-        duration: { hours: 1 },
-      };
-    });
-
-    ics.createEvents(events, (error, value) => {
-      if (error) return;
-      const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `Planora-Batch-${new Date().getTime()}.ics`);
-      link.click();
-      window.URL.revokeObjectURL(url);
-    });
   };
 
   const handleDeleteTask = async (id: string) => {
@@ -192,7 +162,6 @@ function App() {
         <CommandBar 
           onParsed={(data) => {
             setPendingParsed(data);
-            setCurrentConfirmIndex(0);
           }} 
           onLoading={setIsThinking} 
         />
@@ -269,7 +238,6 @@ function App() {
           onConfirm={createAllTasks}
           onCancel={() => {
             setPendingParsed([]);
-            setCurrentConfirmIndex(0);
           }}
         />
       )}
