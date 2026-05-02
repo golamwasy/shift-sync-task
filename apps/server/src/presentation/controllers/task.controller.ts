@@ -22,8 +22,9 @@ const UpdateTaskBody = z.object({
 export class TaskController {
   constructor(private readonly taskRepository: ITaskRepository) {}
 
-  async getAll(_request: FastifyRequest, reply: FastifyReply) {
-    const tasks = await this.taskRepository.findAll();
+  async getAll(request: FastifyRequest<{ Querystring: { userId?: string } }>, reply: FastifyReply) {
+    const { userId } = request.query;
+    const tasks = await this.taskRepository.findAll(userId);
     return reply.send({ status: 'success', data: tasks });
   }
 
@@ -53,7 +54,8 @@ export class TaskController {
     return reply.status(201).send({ status: 'success', data: task });
   }
 
-  async update(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+  async update(request: FastifyRequest<{ Params: { id: string }, Querystring: { userId?: string } }>, reply: FastifyReply) {
+    const { userId } = request.query;
     const parsed = UpdateTaskBody.safeParse(request.body);
     if (!parsed.success) {
       return reply.status(400).send({ error: 'Validation failed', details: parsed.error.errors });
@@ -67,7 +69,7 @@ export class TaskController {
       updateData.scheduledAt = parsed.data.scheduledAt ? new Date(parsed.data.scheduledAt) : null;
     }
 
-    const task = await this.taskRepository.update(request.params.id, updateData as any);
+    const task = await this.taskRepository.update(request.params.id, updateData as any, userId);
     if (!task) {
       return reply.status(404).send({ status: 'error', message: 'Task not found' });
     }
@@ -75,8 +77,9 @@ export class TaskController {
     return reply.send({ status: 'success', data: task });
   }
 
-  async delete(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-    const deleted = await this.taskRepository.delete(request.params.id);
+  async delete(request: FastifyRequest<{ Params: { id: string }, Querystring: { userId?: string } }>, reply: FastifyReply) {
+    const { userId } = request.query;
+    const deleted = await this.taskRepository.delete(request.params.id, userId);
     if (!deleted) {
       return reply.status(404).send({ status: 'error', message: 'Task not found' });
     }

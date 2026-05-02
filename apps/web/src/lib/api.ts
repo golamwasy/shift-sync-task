@@ -3,9 +3,10 @@ import type { Task } from '@shift-sync/shared';
 const API_URL = import.meta.env.VITE_API_URL || '/api'; // Use /api as the base for all requests
 
 export const api = {
-  async fetchTasks(): Promise<Task[]> {
+  async fetchTasks(userId?: string): Promise<Task[]> {
     try {
-      const res = await fetch(`${API_URL}/tasks`);
+      const url = userId ? `${API_URL}/tasks?userId=${userId}` : `${API_URL}/tasks`;
+      const res = await fetch(url);
       if (!res.ok) {
         const error = await res.json().catch(() => ({}));
         throw new Error(error.message || 'Failed to fetch tasks');
@@ -36,8 +37,9 @@ export const api = {
     return json.data;
   },
 
-  async updateTask(id: string, data: Partial<{ title: string; category: string; status: string; scheduledAt: string | null }>): Promise<Task> {
-    const res = await fetch(`${API_URL}/tasks/${id}`, {
+  async updateTask(id: string, data: Partial<{ title: string; category: string; status: string; scheduledAt: string | null }>, userId?: string): Promise<Task> {
+    const url = userId ? `${API_URL}/tasks/${id}?userId=${userId}` : `${API_URL}/tasks/${id}`;
+    const res = await fetch(url, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -47,8 +49,9 @@ export const api = {
     return json.data;
   },
 
-  async deleteTask(id: string): Promise<void> {
-    const res = await fetch(`${API_URL}/tasks/${id}`, { method: 'DELETE' });
+  async deleteTask(id: string, userId?: string): Promise<void> {
+    const url = userId ? `${API_URL}/tasks/${id}?userId=${userId}` : `${API_URL}/tasks/${id}`;
+    const res = await fetch(url, { method: 'DELETE' });
     if (!res.ok) throw new Error('Failed to delete task');
   },
 

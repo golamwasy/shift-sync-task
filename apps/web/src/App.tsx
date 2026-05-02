@@ -7,7 +7,16 @@ import { CommandBar } from './components/CommandBar';
 import { TaskCard } from './components/TaskCard';
 import { ConfirmDialog } from './components/ConfirmDialog';
 
-const DEFAULT_USER_ID = '00000000-0000-0000-0000-000000000001';
+const getOrCreateUserId = () => {
+  let id = localStorage.getItem('planora_user_id');
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem('planora_user_id', id);
+  }
+  return id;
+};
+
+const USER_ID = getOrCreateUserId();
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -21,7 +30,7 @@ function App() {
   const loadTasks = useCallback(async () => {
     try {
       setAppError(null);
-      const data = await api.fetchTasks();
+      const data = await api.fetchTasks(USER_ID);
       setTasks(data);
     } catch (e: any) {
       setAppError(e.message);
@@ -42,7 +51,7 @@ function App() {
         const created = await api.createTask({
           ...taskData,
           status: 'todo',
-          userId: DEFAULT_USER_ID,
+          userId: USER_ID,
         });
         
         const task: Task = {
@@ -67,7 +76,7 @@ function App() {
 
   const handleDeleteTask = async (id: string) => {
     try {
-      await api.deleteTask(id);
+      await api.deleteTask(id, USER_ID);
       setTasks(prev => prev.filter(t => t.id !== id));
     } catch {
       setAppError('Could not delete.');
@@ -76,7 +85,7 @@ function App() {
 
   const handleToggleStatus = async (id: string, newStatus: Task['status']) => {
     try {
-      await api.updateTask(id, { status: newStatus });
+      await api.updateTask(id, { status: newStatus }, USER_ID);
       setTasks(prev => prev.map(t => t.id === id ? { ...t, status: newStatus } : t));
     } catch {
       setAppError('Status update failed.');
