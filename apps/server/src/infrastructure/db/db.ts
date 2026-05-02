@@ -18,6 +18,7 @@ export const tasks = pgTable('tasks', {
   status: varchar('status', { length: 50 }).notNull(),
   userId: uuid('user_id').references(() => users.id).notNull(),
   scheduledAt: timestamp('scheduled_at'),
+  meetingLink: varchar('meeting_link', { length: 512 }),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

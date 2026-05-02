@@ -17,6 +17,7 @@ export const TaskSchema = z.object({
   title: z.string().min(1),
   category: z.string(),
   scheduledAt: z.date().optional(),
+  meetingLink: z.string().optional(),
   status: z.enum(['todo', 'in-progress', 'done']),
   userId: z.string().uuid(),
   createdAt: z.date().optional(),

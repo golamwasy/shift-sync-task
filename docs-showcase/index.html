@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planora | Professional AI Orchestration</title>
+    <meta name="description"
+        content="Enterprise-grade task orchestration powered by Gemini 3.1. Clean architecture meets human-centric design.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="calendar-range" style="width: 18px; height: 18px;"></i>
+                </div>
+                <span class="logo-text">Planora</span>
+            </a>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Platform</a>
+                <a href="#pipeline" class="nav-link">Architecture</a>
+                <a href="https://github.com/golamwasy" class="btn-primary"
+                    style="padding: 10px 20px; font-size: 0.8rem;">
+                    View Source
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="reveal">
+                <span class="badge">Orchestration Engine v2.0</span>
+                <h1>Strategic scheduling,<br>powered by Gemini 3.1.</h1>
+                <p>Planora transforms complex conversational intent into synchronized task pipelines with absolute
+                    architectural integrity.</p>
+                <div style="display: flex; gap: 16px; justify-content: center;">
+                    <a href="#" class="btn-primary">
+                        Get Started <i data-lucide="arrow-right" style="width: 18px;"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" style="background: var(--bg-subtle); border-radius: 48px; margin: 100px auto;">
+            <div class="section-header reveal" style="padding-top: 80px;">
+                <span class="badge">Interface</span>
+                <h2>Seamless Orchestration</h2>
+                <p>A sophisticated interface designed for speed and clarity.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 0 40px 80px;" class="reveal">
+                <div class="card" style="padding: 0; overflow: hidden; border-color: var(--primary-light);">
+                    <div style="padding: 24px; border-bottom: 1px solid var(--border-light); background: #fcfcfd;">
+                        <h4 style="font-weight: 800; font-size: 0.9rem; color: var(--primary);">01. NEURAL INPUT</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">Conversational entry with real-time
+                            feedback.</p>
+                    </div>
+                    <img src="planora.png" alt="Neural Input" style="width: 100%; height: auto; display: block;">
+                </div>
+                <div class="card" style="padding: 0; overflow: hidden; border-color: var(--primary-light);">
+                    <div style="padding: 24px; border-bottom: 1px solid var(--border-light); background: #fcfcfd;">
+                        <h4 style="font-weight: 800; font-size: 0.9rem; color: var(--primary);">02. SYNC BATCH</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">Review and commit multiple events in one
+                            go.</p>
+                    </div>
+                    <img src="events.png" alt="Sync Batch" style="width: 100%; height: auto; display: block;">
+                </div>
+            </div>
+        </section>
+
+        <section id="features">
+            <div class="section-header reveal">
+                <h2>Designed for Precision</h2>
+                <p>A robust suite of orchestration tools built on Clean DDD principles.</p>
+            </div>
+
+            <div class="grid-3">
+                <div class="card reveal">
+                    <div class="card-icon"><i data-lucide="sparkles"></i></div>
+                    <h3>Intent Resolution</h3>
+                    <p>Sophisticated natural language processing that resolves relative time, categories, and intent
+                        with enterprise accuracy.</p>
+                </div>
+                <div class="card reveal" style="transition-delay: 0.1s;">
+                    <div class="card-icon"><i data-lucide="layers"></i></div>
+                    <h3>Batch Processing</h3>
+                    <p>Orchestrate multiple events simultaneously through a refined verification queue designed for
+                        high-throughput productivity.</p>
+                </div>
+                <div class="card reveal" style="transition-delay: 0.2s;">
+                    <div class="card-icon"><i data-lucide="shield-check"></i></div>
+                    <h3>Architectural Integrity</h3>
+                    <p>Built with Domain-Driven Design, ensuring clear boundaries between business logic, persistence,
+                        and external AI services.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="pipeline">
+            <div class="pipeline-section reveal">
+                <div class="pipeline-content">
+                    <span class="badge" style="background: white; border: 1px solid var(--border-light);">Data
+                        Flow</span>
+                    <h2>The Intelligent Pipeline</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 40px;">How Planora bridges the gap between human
+                        conversation and structured calendar data.</p>
+
+                    <div class="step">
+                        <div class="step-num">1</div>
+                        <div class="step-text">
+                            <h4>Temporal Contextualization</h4>
+                            <p>Enriching input with metadata to ensure precise relative date resolution.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">2</div>
+                        <div class="step-text">
+                            <h4>Neural Extraction</h4>
+                            <p>Processing via Gemini 3.1 for multi-event identification and schema mapping.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">3</div>
+                        <div class="step-text">
+                            <h4>Repository Persistence</h4>
+                            <p>Atomic commits to PostgreSQL with automated synchronization triggers.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div style="color: #6366f1; margin-bottom: 8px;">// Input Stream</div>
+                    <div
+                        style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; margin-bottom: 24px; color: #fff; font-size: 0.8rem;">
+                        "Meeting tomorrow at 2pm and gym at 5pm"
+                    </div>
+
+                    <div style="color: #10b981; margin-bottom: 8px;">// Structured Batch</div>
+                    <div
+                        style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; font-size: 0.75rem; color: #94a3b8;">
+                        [<br>
+                        &nbsp;&nbsp;{ "title": "Strategy Sync", "time": "14:00" },<br>
+                        &nbsp;&nbsp;{ "title": "Physical Training", "time": "17:00" }<br>
+                        ]
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="tech-strip reveal">
+            <span class="tech-item">REACT</span>
+            <span class="tech-item">TYPESCRIPT</span>
+            <span class="tech-item">FASTIFY</span>
+            <span class="tech-item">DRIZZLE</span>
+            <span class="tech-item">POSTGRESQL</span>
+            <span class="tech-item">GEMINI 3.1</span>
+        </div>
+    </main>
+
+    <footer>
+        <div class="logo" style="justify-content: center; margin-bottom: 16px;">
+            <div class="logo-icon" style="background: var(--secondary);">
+                <i data-lucide="calendar-range" style="width: 18px; height: 18px;"></i>
+            </div>
+            <span class="logo-text">Planora</span>
+        </div>
+        <p>&copy; 2026 Shift-Sync Technologies. All rights reserved.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                if (elementTop < windowHeight - 100) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal();
+    </script>
+</body>
+
+</html>
