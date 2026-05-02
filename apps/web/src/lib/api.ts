@@ -1,4 +1,4 @@
-import type { Task } from '@shift-sync/shared';
+import type { Task, Project } from '@shift-sync/shared';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api'; // Use /api as the base for all requests
 
@@ -67,5 +67,35 @@ export const api = {
     }
     const json = await res.json();
     return json.data;
+  },
+
+  async decomposeTask(title: string): Promise<string[]> {
+    const res = await fetch(`${API_URL}/ai/decompose`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title }),
+    });
+    if (!res.ok) throw new Error('Decomposition failed');
+    const json = await res.json();
+    return json.data;
+  },
+
+  async fetchProjects(userId: string): Promise<Project[]> {
+    const res = await fetch(`${API_URL}/projects?userId=${userId}`);
+    if (!res.ok) throw new Error('Failed to fetch projects');
+    return res.json();
+  },
+
+  async planProject(goal: string, userId: string): Promise<{ project: Project, tasks: Task[] }> {
+    const res = await fetch(`${API_URL}/projects/plan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ goal, userId }),
+    });
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}));
+      throw new Error(error.message || 'AI Project planning failed');
+    }
+    return res.json();
   },
 };

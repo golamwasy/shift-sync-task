@@ -4,6 +4,7 @@ import cors from '@fastify/cors';
 import healthRoutes from './presentation/routes/health.route';
 import aiRoutes from './presentation/routes/ai.route';
 import taskRoutes from './presentation/routes/task.route';
+import projectRoutes from './presentation/routes/project.route';
 import { seedUser, cleanupOldData } from './infrastructure/db/db';
 
 export const server = Fastify({
@@ -30,6 +31,7 @@ server.register(async (api) => {
   api.register(healthRoutes);
   api.register(aiRoutes, { prefix: '/ai' });
   api.register(taskRoutes, { prefix: '/tasks' });
+  api.register(projectRoutes, { prefix: '/projects' });
 }, { prefix: '/api' });
 
 const start = async () => {

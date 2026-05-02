@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { Task } from '@shift-sync/shared';
-import { X, Loader2, AlertCircle, CalendarRange, Sparkles, Brain } from 'lucide-react';
+import type { Task, Project } from '@shift-sync/shared';
+import { X, Loader2, AlertCircle, CalendarRange, Sparkles, Brain, LayoutGrid, ListTodo } from 'lucide-react';
 import * as ics from 'ics';
 import { api } from './lib/api';
 import { CommandBar } from './components/CommandBar';
 import { TaskCard } from './components/TaskCard';
+import { ProjectCard } from './components/ProjectCard';
 import { ConfirmDialog } from './components/ConfirmDialog';
 
 const getOrCreateUserId = () => {
@@ -20,6 +21,9 @@ const USER_ID = getOrCreateUserId();
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [activeView, setActiveView] = useState<'tasks' | 'projects'>('tasks');
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(new Set());
   const [isAppLoading, setIsAppLoading] = useState(true);
   const [isThinking, setIsThinking] = useState(false);
@@ -27,11 +31,15 @@ function App() {
   const [pendingParsed, setPendingParsed] = useState<{ title: string; category: string; scheduledAt?: string }[]>([]);
   const [isCreating, setIsCreating] = useState(false);
 
-  const loadTasks = useCallback(async () => {
+  const loadData = useCallback(async () => {
     try {
       setAppError(null);
-      const data = await api.fetchTasks(USER_ID);
-      setTasks(data);
+      const [tasksData, projectsData] = await Promise.all([
+        api.fetchTasks(USER_ID),
+        api.fetchProjects(USER_ID)
+      ]);
+      setTasks(tasksData);
+      setProjects(projectsData);
     } catch (e: any) {
       setAppError(e.message);
     } finally {
@@ -39,7 +47,7 @@ function App() {
     }
   }, []);
 
-  useEffect(() => { loadTasks(); }, [loadTasks]);
+  useEffect(() => { loadData(); }, [loadData]);
 
   const createAllTasks = async (finalTasks: { title: string; category: string; scheduledAt: string | null; meetingLink: string | null }[]) => {
     setIsCreating(true);
@@ -130,7 +138,16 @@ function App() {
       setSelectedTaskIds(new Set());
     });
   };
+  const handleProjectPlanned = (project: Project, newTasks: Task[]) => {
+    setProjects(prev => [project, ...prev]);
+    setTasks(prev => [...newTasks, ...prev]);
+    setActiveView('projects');
+    setSelectedProjectId(project.id);
+  };
 
+  const filteredTasks = selectedProjectId 
+    ? tasks.filter(t => t.projectId === selectedProjectId)
+    : tasks;
   return (
     <div className="app-viewport">
       {/* Thinking Overlay */}
@@ -168,12 +185,39 @@ function App() {
 
       {/* Central Input Hub */}
       <section className={`mb-20 transition-all duration-700 ${isThinking ? 'blur-2xl opacity-20 scale-95' : ''}`}>
-        <CommandBar 
-          onParsed={(data) => {
-            setPendingParsed(data);
-          }} 
-          onLoading={setIsThinking} 
-        />
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-4 mb-8 justify-center">
+            <button 
+              onClick={() => { setActiveView('tasks'); setSelectedProjectId(null); }}
+              className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all border ${activeView === 'tasks' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white/5 text-slate-500 border-white/5 hover:border-white/10'}`}
+            >
+              <div className="flex items-center gap-2">
+                <ListTodo className="w-3.5 h-3.5" /> Tasks
+              </div>
+            </button>
+            <button 
+              onClick={() => setActiveView('projects')}
+              className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all border ${activeView === 'projects' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white/5 text-slate-500 border-white/5 hover:border-white/10'}`}
+            >
+              <div className="flex items-center gap-2">
+                <LayoutGrid className="w-3.5 h-3.5" /> Projects
+              </div>
+            </button>
+          </div>
+          
+          <CommandBar 
+            userId={USER_ID}
+            onParsed={(data) => {
+              setPendingParsed(data);
+            }} 
+            onProjectPlanned={handleProjectPlanned}
+            onLoading={setIsThinking} 
+          />
+          
+          <div className="mt-4 flex justify-center">
+            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.2em] animate-pulse">Try: "Plan a 2-week website redesign"</span>
+          </div>
+        </div>
       </section>
 
       {/* Dynamic Content Area */}
@@ -183,32 +227,73 @@ function App() {
             <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mb-4" />
             <span className="text-slate-500 font-bold uppercase text-[10px] tracking-widest">Waking Up...</span>
           </div>
-        ) : tasks.length === 0 ? (
-          <div className="text-center py-20 reveal-item">
-            <Sparkles className="w-12 h-12 text-slate-800 mx-auto mb-6" />
-            <h3 className="text-2xl font-bold text-slate-300">Clean Slate</h3>
-            <p className="text-slate-500 text-sm mt-2">Add an event above to get started.</p>
+        ) : activeView === 'projects' && !selectedProjectId ? (
+          <div className="space-y-10">
+             <div className="flex items-center justify-between reveal-item">
+              <h2 className="text-sm font-black text-slate-500 uppercase tracking-[0.2em]">Active Projects</h2>
+              <span className="text-[10px] font-black bg-white/5 px-3 py-1 rounded-full text-slate-400 border border-white/5">{projects.length} Total</span>
+            </div>
+            
+            {projects.length === 0 ? (
+               <div className="text-center py-20 reveal-item">
+                <Sparkles className="w-12 h-12 text-slate-800 mx-auto mb-6" />
+                <h3 className="text-2xl font-bold text-slate-300">No Projects Yet</h3>
+                <p className="text-slate-500 text-sm mt-2">Use the command bar to architect your first project.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {projects.map((project, index) => (
+                  <div key={project.id} className="reveal-item" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <ProjectCard
+                      project={project}
+                      tasks={tasks}
+                      onClick={(id) => setSelectedProjectId(id)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ) : (
           <div className="space-y-6">
             <div className="flex items-center justify-between mb-8 reveal-item">
-              <h2 className="text-sm font-black text-slate-500 uppercase tracking-[0.2em]">Upcoming Events</h2>
-              <span className="text-[10px] font-black bg-white/5 px-3 py-1 rounded-full text-slate-400 border border-white/5">{tasks.length} Total</span>
+              <div className="flex items-center gap-4">
+                <h2 className="text-sm font-black text-slate-500 uppercase tracking-[0.2em]">
+                  {selectedProjectId ? projects.find(p => p.id === selectedProjectId)?.name : 'Upcoming Events'}
+                </h2>
+                {selectedProjectId && (
+                  <button 
+                    onClick={() => setSelectedProjectId(null)}
+                    className="text-[10px] font-black text-indigo-400 hover:text-indigo-300 transition-colors uppercase tracking-widest"
+                  >
+                    View All
+                  </button>
+                )}
+              </div>
+              <span className="text-[10px] font-black bg-white/5 px-3 py-1 rounded-full text-slate-400 border border-white/5">{filteredTasks.length} Total</span>
             </div>
 
-            <div className="grid grid-cols-1 gap-6">
-              {tasks.map((task, index) => (
-                <div key={task.id} className="reveal-item" style={{ animationDelay: `${index * 0.1}s` }}>
-                  <TaskCard
-                    task={task}
-                    isSelected={selectedTaskIds.has(task.id)}
-                    onToggleSelect={toggleTaskSelection}
-                    onDelete={handleDeleteTask}
-                    onToggleStatus={handleToggleStatus}
-                  />
-                </div>
-              ))}
-            </div>
+            {filteredTasks.length === 0 ? (
+               <div className="text-center py-20 reveal-item">
+                <Sparkles className="w-12 h-12 text-slate-800 mx-auto mb-6" />
+                <h3 className="text-2xl font-bold text-slate-300">Clean Slate</h3>
+                <p className="text-slate-500 text-sm mt-2">Add an event or select a project.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6">
+                {filteredTasks.map((task, index) => (
+                  <div key={task.id} className="reveal-item" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <TaskCard
+                      task={task}
+                      isSelected={selectedTaskIds.has(task.id)}
+                      onToggleSelect={toggleTaskSelection}
+                      onDelete={handleDeleteTask}
+                      onToggleStatus={handleToggleStatus}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </main>

@@ -7,4 +7,5 @@ export default async function aiRoutes(fastify: FastifyInstance) {
   const aiController = container.resolve('aiController') as AIController;
 
   fastify.post('/parse', aiController.parse.bind(aiController));
+  fastify.post('/decompose', aiController.decompose.bind(aiController));
 }

@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, timestamp, integer } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, integer, jsonb } from 'drizzle-orm/pg-core';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { eq, lt, sql, and } from 'drizzle-orm';
 import postgres from 'postgres';
@@ -18,14 +18,37 @@ export const aiUsage = pgTable('ai_usage', {
   lastRequestAt: timestamp('last_request_at').defaultNow(),
 });
 
+export const projects = pgTable('projects', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: varchar('name', { length: 256 }).notNull(),
+  description: varchar('description', { length: 1024 }),
+  status: varchar('status', { length: 50 }).notNull(),
+  dueDate: timestamp('due_date'),
+  userId: uuid('user_id').references(() => users.id).notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
 export const tasks = pgTable('tasks', {
   id: uuid('id').primaryKey().defaultRandom(),
   title: varchar('title', { length: 256 }).notNull(),
   category: varchar('category', { length: 100 }).notNull(),
   status: varchar('status', { length: 50 }).notNull(),
   userId: uuid('user_id').references(() => users.id).notNull(),
+  projectId: uuid('project_id').references(() => projects.id),
+  dependsOn: jsonb('depends_on').default([]),
   scheduledAt: timestamp('scheduled_at'),
   meetingLink: varchar('meeting_link', { length: 512 }),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const resources = pgTable('resources', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: varchar('name', { length: 256 }).notNull(),
+  type: varchar('type', { length: 50 }).notNull(),
+  url: varchar('url', { length: 1024 }),
+  projectId: uuid('project_id').references(() => projects.id),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

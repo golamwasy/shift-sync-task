@@ -1,5 +1,7 @@
 import type { Task } from '@shift-sync/shared';
-import { CheckCircle2, Clock, Calendar as CalendarIcon, Trash2, Video, Hash } from 'lucide-react';
+import { CheckCircle2, Clock, Calendar as CalendarIcon, Trash2, Video, Hash, ChevronDown, ChevronUp, Wand2 } from 'lucide-react';
+import { useState } from 'react';
+import { api } from '../lib/api';
 import { formatDistanceToNow, isPast } from 'date-fns';
 
 interface TaskCardProps {
@@ -11,7 +13,25 @@ interface TaskCardProps {
 }
 
 export function TaskCard({ task, isSelected, onToggleSelect, onDelete, onToggleStatus }: TaskCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [subtasks, setSubtasks] = useState<string[]>([]);
+  const [isDecomposing, setIsDecomposing] = useState(false);
   const isDone = task.status === 'done';
+
+  const handleDecompose = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isDecomposing) return;
+    setIsDecomposing(true);
+    setIsExpanded(true);
+    try {
+      const data = await api.decomposeTask(task.title);
+      setSubtasks(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsDecomposing(false);
+    }
+  };
 
   return (
     <div
@@ -43,8 +63,45 @@ export function TaskCard({ task, isSelected, onToggleSelect, onDelete, onToggleS
           <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-indigo-500 border-indigo-500' : 'border-white/10 bg-white/5'}`}>
             {isSelected && <CheckCircle2 className="w-4 h-4 text-white" />}
           </div>
+          <button 
+            onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
+            className="p-2 text-slate-500 hover:text-white transition-all"
+          >
+            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
         </div>
       </div>
+
+      {isExpanded && (
+        <div className="mb-6 animate-in slide-in-from-top-4 duration-300">
+          {subtasks.length === 0 && !isDecomposing ? (
+            <button 
+              onClick={handleDecompose}
+              className="flex items-center gap-3 w-full p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/10 hover:bg-indigo-500/10 transition-all text-indigo-400 group/ai"
+            >
+              <div className="w-8 h-8 rounded-xl bg-indigo-500/10 flex items-center justify-center group-hover/ai:scale-110 transition-transform">
+                <Wand2 className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-widest">AI Decompose Task</span>
+            </button>
+          ) : (
+            <div className="space-y-3">
+               {isDecomposing && (
+                <div className="flex items-center gap-3 p-4 text-slate-500 animate-pulse">
+                  <Wand2 className="w-4 h-4 animate-spin" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Breaking it down...</span>
+                </div>
+              )}
+              {subtasks.map((st, i) => (
+                <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 text-xs text-slate-300 font-medium">
+                  <div className="w-4 h-4 rounded border border-white/20"></div>
+                  {st}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="flex items-center justify-between pt-6 border-t border-white/5 mt-4">
         <div className="flex items-center gap-4">

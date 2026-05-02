@@ -4,10 +4,12 @@ import { api } from '../lib/api';
 
 interface CommandBarProps {
   onParsed: (data: { title: string; category: string; scheduledAt?: string }[]) => void;
+  onProjectPlanned: (project: any, tasks: any[]) => void;
   onLoading?: (loading: boolean) => void;
+  userId: string;
 }
 
-export function CommandBar({ onParsed, onLoading }: CommandBarProps) {
+export function CommandBar({ onParsed, onProjectPlanned, onLoading, userId }: CommandBarProps) {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,8 +20,14 @@ export function CommandBar({ onParsed, onLoading }: CommandBarProps) {
     onLoading?.(true);
     setError(null);
     try {
-      const data = await api.parseAI(inputText);
-      onParsed(data);
+      const lowerText = inputText.toLowerCase().trim();
+      if (lowerText.startsWith('plan') || lowerText.startsWith('project')) {
+        const { project, tasks } = await api.planProject(inputText, userId);
+        onProjectPlanned(project, tasks);
+      } else {
+        const data = await api.parseAI(inputText);
+        onParsed(data);
+      }
       setInputText('');
     } catch (err: any) {
       setError(err.message || 'Failed to parse');

@@ -7,6 +7,8 @@ export interface CreateTaskDTO {
   scheduledAt?: Date;
   status: 'todo' | 'in-progress' | 'done';
   userId: string;
+  projectId?: string;
+  dependsOn?: string[];
 }
 
 export class CreateTaskUseCase {

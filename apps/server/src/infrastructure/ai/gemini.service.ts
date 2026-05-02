@@ -81,4 +81,89 @@ User input: "${text}"`;
       throw new Error("Failed to parse task text. AI service might be busy.");
     }
   }
+
+  async planProject(goal: string) {
+    const responseSchema: Schema = {
+      type: Type.OBJECT,
+      properties: {
+        name: { type: Type.STRING },
+        description: { type: Type.STRING },
+        tasks: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              title: { type: Type.STRING },
+              category: { type: Type.STRING },
+              durationDays: { type: Type.NUMBER },
+              dependencies: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Titles of tasks this task depends on within this project." }
+            },
+            required: ["title", "category"]
+          }
+        }
+      },
+      required: ["name", "tasks"]
+    };
+
+    const prompt = `You are an AI Project Architect. Plan a complete project based on this goal: "${goal}".
+    Return a structured project with tasks, categories, estimated durations, and logical dependencies between them.`;
+
+    try {
+      const response = await this.ai.models.generateContent({
+        model: 'gemini-1.5-flash',
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: responseSchema,
+        }
+      });
+      if (!response.text) throw new Error("No response from Gemini");
+      return JSON.parse(response.text);
+    } catch (error) {
+      console.error("Gemini Project Planning Error:", error);
+      throw new Error("Failed to generate project plan.");
+    }
+  }
+
+  async decomposeTask(taskTitle: string) {
+    const responseSchema: Schema = {
+      type: Type.ARRAY,
+      items: { type: Type.STRING }
+    };
+
+    const prompt = `Decompose the following task into 5-8 actionable subtasks: "${taskTitle}"`;
+
+    try {
+      const response = await this.ai.models.generateContent({
+        model: 'gemini-1.5-flash',
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: responseSchema,
+        }
+      });
+      if (!response.text) throw new Error("No response from Gemini");
+      return JSON.parse(response.text);
+    } catch (error) {
+      console.error("Gemini Decomposition Error:", error);
+      throw new Error("Failed to decompose task.");
+    }
+  }
+
+  async assessRisk(projectData: any) {
+    const prompt = `Assess the risk of this project based on its tasks and deadlines. Identify bottlenecks and at-risk milestones.
+    Project Data: ${JSON.stringify(projectData)}
+    Return a concise summary of risks and recommendations.`;
+
+    try {
+      const response = await this.ai.models.generateContent({
+        model: 'gemini-1.5-flash',
+        contents: prompt,
+      });
+      return response.text;
+    } catch (error) {
+      console.error("Gemini Risk Assessment Error:", error);
+      throw new Error("Failed to assess project risk.");
+    }
+  }
 }

@@ -24,6 +24,8 @@ export class DrizzleTaskRepository implements ITaskRepository {
         category: data.category,
         status: data.status,
         userId: data.userId,
+        projectId: data.projectId ?? null,
+        dependsOn: data.dependsOn ?? [],
         scheduledAt: data.scheduledAt ?? null,
         meetingLink: data.meetingLink ?? null,
       })
@@ -61,6 +63,8 @@ export class DrizzleTaskRepository implements ITaskRepository {
     if (data.status !== undefined) values.status = data.status;
     if (data.scheduledAt !== undefined) values.scheduledAt = data.scheduledAt;
     if (data.meetingLink !== undefined) values.meetingLink = data.meetingLink;
+    if (data.projectId !== undefined) values.projectId = data.projectId;
+    if (data.dependsOn !== undefined) values.dependsOn = data.dependsOn;
 
     let query = db.update(tasks).set({ ...values, updatedAt: new Date() });
     
@@ -98,6 +102,8 @@ export class DrizzleTaskRepository implements ITaskRepository {
       userId: row.userId,
       scheduledAt: row.scheduledAt ?? undefined,
       meetingLink: row.meetingLink ?? undefined,
+      projectId: row.projectId ?? undefined,
+      dependsOn: (row.dependsOn as string[]) ?? [],
       createdAt: row.createdAt ?? undefined,
       updatedAt: row.updatedAt ?? undefined,
     };

@@ -1,0 +1,10 @@
+import { IProjectRepository } from '../../domain/repositories/project.repository';
+import { Project } from '../../domain/entities';
+
+export class GetProjectsUseCase {
+  constructor(private projectRepository: IProjectRepository) {}
+
+  async execute(userId: string): Promise<Project[]> {
+    return this.projectRepository.findAll(userId);
+  }
+}

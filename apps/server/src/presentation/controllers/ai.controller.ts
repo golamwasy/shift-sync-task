@@ -82,4 +82,16 @@ export class AIController {
       });
     }
   }
+
+  async decompose(request: FastifyRequest<{ Body: { title: string } }>, reply: FastifyReply) {
+    try {
+      const { title } = request.body;
+      if (!title) return reply.status(400).send({ error: 'Title is required' });
+
+      const subtasks = await this.geminiService.decomposeTask(title);
+      return reply.send({ status: 'success', data: subtasks });
+    } catch (error) {
+      return reply.status(500).send({ status: 'error', message: 'Failed to decompose task' });
+    }
+  }
 }
