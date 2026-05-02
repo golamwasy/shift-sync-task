@@ -1,12 +1,11 @@
 import { eq, and } from 'drizzle-orm';
-import { db, tasks } from '../db/db';
+import { db, tasks, users } from '../db/db';
 import { ITaskRepository } from '../../domain/repositories/task.repository';
 import type { Task } from '../../domain/entities';
 
 export class DrizzleTaskRepository implements ITaskRepository {
   async create(data: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): Promise<Task> {
     // Ensure user exists (anonymous user support)
-    const { users } = await import('../db/db');
     const existingUser = await db.select().from(users).where(eq(users.id, data.userId)).limit(1);
     
     if (existingUser.length === 0) {
