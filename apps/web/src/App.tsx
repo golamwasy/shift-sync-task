@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Task, Project } from '@shift-sync/shared';
-import { X, Loader2, AlertCircle, CalendarRange, Sparkles, Brain, LayoutGrid, ListTodo } from 'lucide-react';
+import { X, Loader2, AlertCircle, CalendarRange, Sparkles, Brain, LayoutGrid, ListTodo, TrendingUp, BarChart3, Clock, AlertTriangle } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import * as ics from 'ics';
 import { api } from './lib/api';
 import { CommandBar } from './components/CommandBar';
@@ -23,7 +24,7 @@ const USER_ID = getOrCreateUserId();
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [activeView, setActiveView] = useState<'tasks' | 'projects'>('tasks');
+  const [activeView, setActiveView] = useState<'tasks' | 'projects'>('projects');
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(new Set());
   const [isAppLoading, setIsAppLoading] = useState(true);
@@ -142,18 +143,26 @@ function App() {
   const [riskAnalysis, setRiskAnalysis] = useState<string | null>(null);
   const [isAssessingRisk, setIsAssessingRisk] = useState(false);
 
-  const handleAssessRisk = async () => {
-    if (!selectedProjectId) return;
+  const handleAssessRisk = useCallback(async (id: string) => {
     setIsAssessingRisk(true);
+    setRiskAnalysis(null);
     try {
-      const risk = await api.assessRisk(selectedProjectId, USER_ID);
+      const risk = await api.assessRisk(id, USER_ID);
       setRiskAnalysis(risk);
     } catch (err: any) {
       setAppError(err.message);
     } finally {
       setIsAssessingRisk(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (selectedProjectId) {
+      handleAssessRisk(selectedProjectId);
+    } else {
+      setRiskAnalysis(null);
+    }
+  }, [selectedProjectId, handleAssessRisk]);
 
   const handleProjectPlanned = (project: Project, newTasks: Task[]) => {
     setProjects(prev => [project, ...prev]);
@@ -272,61 +281,160 @@ function App() {
               </div>
             )}
           </div>
+        ) : selectedProjectId ? (
+          <div className="space-y-10">
+            {/* Project Header Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 reveal-item">
+              <div className="glass-card p-6 rounded-3xl border-white/5 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center">
+                  <BarChart3 className="w-6 h-6 text-indigo-400" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Tasks</p>
+                  <p className="text-xl font-black text-white">{filteredTasks.length}</p>
+                </div>
+              </div>
+              <div className="glass-card p-6 rounded-3xl border-white/5 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 text-emerald-400" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Progress</p>
+                  <p className="text-xl font-black text-white">
+                    {Math.round((filteredTasks.filter(t => t.status === 'done').length / (filteredTasks.length || 1)) * 100)}%
+                  </p>
+                </div>
+              </div>
+              <div className="glass-card p-6 rounded-3xl border-white/5 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center">
+                  <Clock className="w-6 h-6 text-amber-400" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Late</p>
+                  <p className="text-xl font-black text-white">0</p>
+                </div>
+              </div>
+              <div className="glass-card p-6 rounded-3xl border-white/5 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center">
+                  <AlertTriangle className="w-6 h-6 text-rose-400" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Risks</p>
+                  <p className="text-xl font-black text-white">{riskAnalysis ? 'High' : 'Low'}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Side by Side Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+              {/* Left Column: Risk & Details */}
+              <div className="lg:col-span-5 space-y-10">
+                <div className="glass-card p-8 rounded-[2.5rem] border-white/5 relative overflow-hidden reveal-item">
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                      <Brain className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-white uppercase tracking-widest">AI Risk Analysis</h3>
+                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Predictive Insights</p>
+                    </div>
+                  </div>
+
+                  {isAssessingRisk ? (
+                    <div className="flex flex-col items-center justify-center py-12">
+                      <Loader2 className="w-8 h-8 text-indigo-500 animate-spin mb-4" />
+                      <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Analyzing bottlenecks...</p>
+                    </div>
+                  ) : riskAnalysis ? (
+                    <div className="prose prose-invert prose-sm max-w-none">
+                      <ReactMarkdown 
+                        components={{
+                          p: ({ children }) => <p className="text-slate-400 text-xs leading-relaxed mb-4 font-medium">{children}</p>,
+                          li: ({ children }) => <li className="text-slate-400 text-xs mb-2 font-medium">{children}</li>,
+                          h3: ({ children }) => <h3 className="text-white text-xs font-black uppercase tracking-widest mt-6 mb-3">{children}</h3>,
+                        }}
+                      >
+                        {riskAnalysis}
+                      </ReactMarkdown>
+                    </div>
+                  ) : (
+                    <p className="text-slate-500 text-xs font-medium italic">No analysis available.</p>
+                  )}
+                </div>
+
+                <div className="glass-card p-8 rounded-[2.5rem] border-white/5 reveal-item">
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center">
+                      <BarChart3 className="w-5 h-5 text-indigo-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-white uppercase tracking-widest">Workload</h3>
+                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Category Distribution</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {Array.from(new Set(filteredTasks.map(t => t.category))).map(cat => {
+                      const count = filteredTasks.filter(t => t.category === cat).length;
+                      const percent = (count / filteredTasks.length) * 100;
+                      return (
+                        <div key={cat} className="space-y-2">
+                          <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                            <span>{cat}</span>
+                            <span>{count} Tasks</span>
+                          </div>
+                          <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-full bg-indigo-500/50" style={{ width: `${percent}%` }}></div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="reveal-item">
+                   <button 
+                    onClick={() => setSelectedProjectId(null)}
+                    className="w-full py-4 rounded-2xl border border-white/5 bg-white/5 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:bg-white/10 transition-all"
+                  >
+                    Back to Projects
+                  </button>
+                </div>
+              </div>
+
+              {/* Right Column: Timeline & Tasks */}
+              <div className="lg:col-span-7 space-y-10">
+                <GanttChart tasks={filteredTasks} />
+                
+                <div className="space-y-6">
+                   <div className="flex items-center justify-between reveal-item">
+                    <h2 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Detailed Tasks</h2>
+                    <span className="text-[10px] font-black bg-white/5 px-3 py-1 rounded-full text-slate-400 border border-white/5">{filteredTasks.length} Total</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 gap-4">
+                    {filteredTasks.map((task, index) => (
+                      <div key={task.id} className="reveal-item" style={{ animationDelay: `${index * 0.05}s` }}>
+                        <TaskCard
+                          task={task}
+                          isSelected={selectedTaskIds.has(task.id)}
+                          onToggleSelect={toggleTaskSelection}
+                          onDelete={handleDeleteTask}
+                          onToggleStatus={handleToggleStatus}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         ) : (
           <div className="space-y-6">
             <div className="flex items-center justify-between mb-8 reveal-item">
-              <div className="flex items-center gap-4">
-                <h2 className="text-sm font-black text-slate-500 uppercase tracking-[0.2em]">
-                  {selectedProjectId ? projects.find(p => p.id === selectedProjectId)?.name : 'Upcoming Events'}
-                </h2>
-                {selectedProjectId && (
-                  <>
-                    <button 
-                      onClick={() => setSelectedProjectId(null)}
-                      className="text-[10px] font-black text-indigo-400 hover:text-indigo-300 transition-colors uppercase tracking-widest"
-                    >
-                      View All
-                    </button>
-                    <div className="h-4 w-[1px] bg-white/10"></div>
-                    <button 
-                      onClick={handleAssessRisk}
-                      disabled={isAssessingRisk}
-                      className="flex items-center gap-2 text-[10px] font-black text-emerald-400 hover:text-emerald-300 transition-colors uppercase tracking-widest disabled:opacity-50"
-                    >
-                      <Brain className={`w-3 h-3 ${isAssessingRisk ? 'animate-pulse' : ''}`} />
-                      {isAssessingRisk ? 'Analyzing Risks...' : 'AI Risk Analysis'}
-                    </button>
-                  </>
-                )}
-              </div>
-              <span className="text-[10px] font-black bg-white/5 px-3 py-1 rounded-full text-slate-400 border border-white/5">{filteredTasks.length} Total</span>
+              <h2 className="text-sm font-black text-slate-500 uppercase tracking-[0.2em]">Upcoming Events</h2>
+              <span className="text-[10px] font-black bg-white/5 px-3 py-1 rounded-full text-slate-400 border border-white/5">{tasks.length} Total</span>
             </div>
-
-            {riskAnalysis && selectedProjectId && (
-              <div className="mb-10 p-8 rounded-[2rem] bg-indigo-500/5 border border-indigo-500/10 relative overflow-hidden reveal-item">
-                <div className="absolute top-0 right-0 p-4">
-                  <button onClick={() => setRiskAnalysis(null)} className="text-slate-500 hover:text-white transition-colors">
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-                    <Brain className="w-5 h-5 text-emerald-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-white uppercase tracking-widest">AI Risk Assessment</h3>
-                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Predictive Bottleneck Analysis</p>
-                  </div>
-                </div>
-                <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap font-medium">
-                  {riskAnalysis}
-                </div>
-              </div>
-            )}
-
-            {selectedProjectId && filteredTasks.length > 0 && (
-              <GanttChart tasks={filteredTasks} />
-            )}
 
             {filteredTasks.length === 0 ? (
                <div className="text-center py-20 reveal-item">
