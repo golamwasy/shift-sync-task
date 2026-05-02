@@ -1,6 +1,6 @@
 import type { Task } from '@shift-sync/shared';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || '/api'; // Use /api as the base for all requests
 
 export const api = {
   async fetchTasks(): Promise<Task[]> {

@@ -5,7 +5,7 @@ import healthRoutes from './presentation/routes/health.route';
 import aiRoutes from './presentation/routes/ai.route';
 import taskRoutes from './presentation/routes/task.route';
 
-const server = Fastify({
+export const server = Fastify({
   logger: true
 });
 
@@ -15,10 +15,12 @@ server.register(cors, {
   origin: allowedOrigins
 });
 
-// Register routes
-server.register(healthRoutes);
-server.register(aiRoutes, { prefix: '/ai' });
-server.register(taskRoutes, { prefix: '/tasks' });
+// Register routes with /api prefix
+server.register(async (api) => {
+  api.register(healthRoutes);
+  api.register(aiRoutes, { prefix: '/ai' });
+  api.register(taskRoutes, { prefix: '/tasks' });
+}, { prefix: '/api' });
 
 const start = async () => {
   try {
@@ -31,4 +33,12 @@ const start = async () => {
   }
 };
 
-start();
+// Only start the server if we are running this file directly (not as a Vercel function)
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  start();
+}
+
+export default async (req: any, res: any) => {
+  await server.ready();
+  server.server.emit('request', req, res);
+};
