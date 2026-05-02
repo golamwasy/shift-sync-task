@@ -1,6 +1,6 @@
-import { pgTable, uuid, varchar, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, integer } from 'drizzle-orm/pg-core';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { eq } from 'drizzle-orm';
+import { eq, lt, sql, and } from 'drizzle-orm';
 import postgres from 'postgres';
 
 export const users = pgTable('users', {
@@ -10,6 +10,12 @@ export const users = pgTable('users', {
   role: varchar('role', { length: 50 }).notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const aiUsage = pgTable('ai_usage', {
+  ip: varchar('ip', { length: 50 }).primaryKey(),
+  count: integer('count').notNull().default(0),
+  lastRequestAt: timestamp('last_request_at').defaultNow(),
 });
 
 export const tasks = pgTable('tasks', {
@@ -42,5 +48,33 @@ export async function seedUser() {
       name: 'Wasy (Default)',
       role: 'admin'
     });
+  }
+}
+
+/**
+ * Deletes tasks and users that are older than 3 days.
+ * This is used to maintain privacy and limit data retention for session-based users.
+ */
+export async function cleanupOldData() {
+  console.log('Running cleanup of old session data...');
+  const threeDaysAgo = new Date();
+  threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+  try {
+    // Delete old tasks first (due to foreign key)
+    await db.delete(tasks).where(lt(tasks.createdAt, threeDaysAgo));
+    
+    // Delete old users (except the default one)
+    const DEFAULT_USER_ID = '00000000-0000-0000-0000-000000000001';
+    await db.delete(users).where(
+      and(
+        lt(users.createdAt, threeDaysAgo),
+        sql`${users.id}::text != ${DEFAULT_USER_ID}`
+      )
+    );
+    
+    console.log(`Cleanup complete. Deleted old tasks and users.`);
+  } catch (error) {
+    console.error('Error during data cleanup:', error);
   }
 }

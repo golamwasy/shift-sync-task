@@ -4,10 +4,11 @@ import cors from '@fastify/cors';
 import healthRoutes from './presentation/routes/health.route';
 import aiRoutes from './presentation/routes/ai.route';
 import taskRoutes from './presentation/routes/task.route';
-import { seedUser } from './infrastructure/db/db';
+import { seedUser, cleanupOldData } from './infrastructure/db/db';
 
 export const server = Fastify({
-  logger: true
+  logger: true,
+  trustProxy: true
 });
 
 // Register CORS
@@ -19,6 +20,13 @@ server.register(cors, {
 // Register routes with /api prefix
 server.register(async (api) => {
   await seedUser(); // Ensure default user exists
+  await cleanupOldData(); // Run cleanup on start
+  
+  // Schedule cleanup every 24 hours
+  setInterval(() => {
+    cleanupOldData().catch(err => console.error('Scheduled cleanup failed:', err));
+  }, 24 * 60 * 60 * 1000);
+
   api.register(healthRoutes);
   api.register(aiRoutes, { prefix: '/ai' });
   api.register(taskRoutes, { prefix: '/tasks' });
