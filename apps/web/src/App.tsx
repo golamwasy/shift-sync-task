@@ -55,7 +55,7 @@ function App() {
     setIsCreating(true);
     try {
       const createdTasks: Task[] = [];
-      
+
       // Create all tasks in parallel or sequence
       for (const taskData of finalTasks) {
         const created = await api.createTask({
@@ -63,7 +63,7 @@ function App() {
           status: 'todo',
           userId: USER_ID,
         });
-        
+
         const task: Task = {
           ...created,
           scheduledAt: created.scheduledAt ? new Date(created.scheduledAt as any) : undefined,
@@ -74,7 +74,7 @@ function App() {
       }
 
       setTasks(prev => [...createdTasks, ...prev]);
-      
+
       // Clear queue
       setPendingParsed([]);
     } catch (e: any) {
@@ -171,7 +171,7 @@ function App() {
     setSelectedProjectId(project.id);
   };
 
-  const filteredTasks = selectedProjectId 
+  const filteredTasks = selectedProjectId
     ? tasks.filter(t => t.projectId === selectedProjectId)
     : tasks;
   return (
@@ -213,15 +213,7 @@ function App() {
       <section className={`mb-20 transition-all duration-700 ${isThinking ? 'blur-2xl opacity-20 scale-95' : ''}`}>
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-4 mb-8 justify-center">
-            <button 
-              onClick={() => { setActiveView('tasks'); setSelectedProjectId(null); }}
-              className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all border ${activeView === 'tasks' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white/5 text-slate-500 border-white/5 hover:border-white/10'}`}
-            >
-              <div className="flex items-center gap-2">
-                <ListTodo className="w-3.5 h-3.5" /> Tasks
-              </div>
-            </button>
-            <button 
+            <button
               onClick={() => setActiveView('projects')}
               className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all border ${activeView === 'projects' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white/5 text-slate-500 border-white/5 hover:border-white/10'}`}
             >
@@ -229,18 +221,26 @@ function App() {
                 <LayoutGrid className="w-3.5 h-3.5" /> Projects
               </div>
             </button>
+            <button
+              onClick={() => { setActiveView('tasks'); setSelectedProjectId(null); }}
+              className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all border ${activeView === 'tasks' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white/5 text-slate-500 border-white/5 hover:border-white/10'}`}
+            >
+              <div className="flex items-center gap-2">
+                <ListTodo className="w-3.5 h-3.5" /> Tasks
+              </div>
+            </button>
           </div>
-          
-          <CommandBar 
+
+          <CommandBar
             userId={USER_ID}
             activeView={activeView}
             onParsed={(data) => {
               setPendingParsed(data);
-            }} 
+            }}
             onProjectPlanned={handleProjectPlanned}
-            onLoading={setIsThinking} 
+            onLoading={setIsThinking}
           />
-          
+
           <div className="mt-4 flex justify-center">
             <span className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.2em] animate-pulse">Try: "Plan a 2-week website redesign"</span>
           </div>
@@ -256,13 +256,13 @@ function App() {
           </div>
         ) : activeView === 'projects' && !selectedProjectId ? (
           <div className="space-y-10">
-             <div className="flex items-center justify-between reveal-item">
+            <div className="flex items-center justify-between reveal-item">
               <h2 className="text-sm font-black text-slate-500 uppercase tracking-[0.2em]">Active Projects</h2>
               <span className="text-[10px] font-black bg-white/5 px-3 py-1 rounded-full text-slate-400 border border-white/5">{projects.length} Total</span>
             </div>
-            
+
             {projects.length === 0 ? (
-               <div className="text-center py-20 reveal-item">
+              <div className="text-center py-20 reveal-item">
                 <Sparkles className="w-12 h-12 text-slate-800 mx-auto mb-6" />
                 <h3 className="text-2xl font-bold text-slate-300">No Projects Yet</h3>
                 <p className="text-slate-500 text-sm mt-2">Use the command bar to architect your first project.</p>
@@ -347,7 +347,7 @@ function App() {
                     </div>
                   ) : riskAnalysis ? (
                     <div className="prose prose-invert prose-sm max-w-none">
-                      <ReactMarkdown 
+                      <ReactMarkdown
                         components={{
                           p: ({ children }) => <p className="text-slate-400 text-xs leading-relaxed mb-4 font-medium">{children}</p>,
                           li: ({ children }) => <li className="text-slate-400 text-xs mb-2 font-medium">{children}</li>,
@@ -372,7 +372,7 @@ function App() {
                       <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Category Distribution</p>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-4">
                     {Array.from(new Set(filteredTasks.map(t => t.category))).map(cat => {
                       const count = filteredTasks.filter(t => t.category === cat).length;
@@ -393,7 +393,7 @@ function App() {
                 </div>
 
                 <div className="reveal-item">
-                   <button 
+                  <button
                     onClick={() => setSelectedProjectId(null)}
                     className="w-full py-4 rounded-2xl border border-white/5 bg-white/5 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:bg-white/10 transition-all"
                   >
@@ -405,13 +405,13 @@ function App() {
               {/* Right Column: Timeline & Tasks */}
               <div className="lg:col-span-7 space-y-10">
                 <GanttChart tasks={filteredTasks} />
-                
+
                 <div className="space-y-6">
-                   <div className="flex items-center justify-between reveal-item">
+                  <div className="flex items-center justify-between reveal-item">
                     <h2 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Detailed Tasks</h2>
                     <span className="text-[10px] font-black bg-white/5 px-3 py-1 rounded-full text-slate-400 border border-white/5">{filteredTasks.length} Total</span>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 gap-4">
                     {filteredTasks.map((task, index) => (
                       <div key={task.id} className="reveal-item" style={{ animationDelay: `${index * 0.05}s` }}>
@@ -437,7 +437,7 @@ function App() {
             </div>
 
             {filteredTasks.length === 0 ? (
-               <div className="text-center py-20 reveal-item">
+              <div className="text-center py-20 reveal-item">
                 <Sparkles className="w-12 h-12 text-slate-800 mx-auto mb-6" />
                 <h3 className="text-2xl font-bold text-slate-300">Clean Slate</h3>
                 <p className="text-slate-500 text-sm mt-2">Add an event or select a project.</p>
