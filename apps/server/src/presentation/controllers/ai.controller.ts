@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import { GeminiService } from '../../infrastructure/ai/gemini.service';
-import { db, aiUsage } from '../../infrastructure/db/db';
-import { eq, sql } from 'drizzle-orm';
+import { db as database, aiUsage } from '../../infrastructure/db/db';
+import { eq } from 'drizzle-orm';
 
 const ParseRequestSchema = z.object({
   text: z.string({ required_error: "Text input is required" }).min(1, "Text input is required")
@@ -11,7 +11,7 @@ const ParseRequestSchema = z.object({
 export class AIController {
   constructor(
     private readonly geminiService: GeminiService,
-    private readonly db: typeof db
+    private readonly db: typeof database
   ) {}
 
   async parse(request: FastifyRequest<{ Body: { text: string } }>, reply: FastifyReply) {
