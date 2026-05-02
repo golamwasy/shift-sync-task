@@ -9,7 +9,8 @@ import { seedUser, cleanupOldData } from './infrastructure/db/db';
 
 export const server = Fastify({
   logger: true,
-  trustProxy: true
+  trustProxy: true,
+  ignoreTrailingSlash: true
 });
 
 // Register CORS

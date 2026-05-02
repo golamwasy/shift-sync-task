@@ -1,10 +1,22 @@
 import { eq, and } from 'drizzle-orm';
-import { db, projects } from './db';
+import { db, projects, users } from './db';
 import { IProjectRepository } from '../../domain/repositories/project.repository';
 import type { Project } from '../../domain/entities';
 
 export class DrizzleProjectRepository implements IProjectRepository {
   async create(data: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>): Promise<Project> {
+    // Ensure user exists (anonymous user support)
+    const existingUser = await db.select().from(users).where(eq(users.id, data.userId)).limit(1);
+    
+    if (existingUser.length === 0) {
+      await db.insert(users).values({
+        id: data.userId,
+        email: `anon-${data.userId}@planora.ai`,
+        name: 'Anonymous User',
+        role: 'user'
+      });
+    }
+
     const [row] = await db
       .insert(projects)
       .values({

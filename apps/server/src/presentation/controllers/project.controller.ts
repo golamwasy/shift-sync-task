@@ -25,40 +25,40 @@ export class ProjectController {
   }
 
   async plan(request: FastifyRequest, reply: FastifyReply) {
-    const { goal, userId } = request.body as { goal: string; userId: string };
-    
-    // 1. Ask Gemini to plan the project
-    const plan = await this.geminiService.planProject(goal);
-    
-    // 2. Create the Project container
-    const project = await this.createProjectUseCase.execute({
-      name: plan.name,
-      description: plan.description,
-      status: 'active',
-      userId: userId
-    });
-    
-    // 3. Create all Tasks and handle basic title-based dependency linking
-    const createdTasks = [];
-    const taskMap = new Map();
-    
-    for (const taskData of plan.tasks) {
-      const task = await this.createTaskUseCase.execute({
-        title: taskData.title,
-        category: taskData.category,
-        status: 'todo',
-        userId: userId,
-        projectId: project.id,
+    try {
+      const { goal, userId } = request.body as { goal: string; userId: string };
+      
+      // 1. Ask Gemini to plan the project
+      const plan = await this.geminiService.planProject(goal);
+      
+      // 2. Create the Project container
+      const project = await this.createProjectUseCase.execute({
+        name: plan.name,
+        description: plan.description,
+        status: 'active',
+        userId: userId
       });
-      createdTasks.push(task);
-      taskMap.set(taskData.title, task.id);
+      
+      // 3. Create all Tasks
+      const createdTasks = [];
+      for (const taskData of plan.tasks) {
+        const task = await this.createTaskUseCase.execute({
+          title: taskData.title,
+          category: taskData.category,
+          status: 'todo',
+          userId: userId,
+          projectId: project.id,
+        });
+        createdTasks.push(task);
+      }
+      
+      return reply.send({ project, tasks: createdTasks });
+    } catch (error: any) {
+      request.log.error(error);
+      return reply.status(500).send({ 
+        status: 'error', 
+        message: error.message || 'AI Project planning failed' 
+      });
     }
-    
-    // 4. Update tasks with dependencies (title -> id mapping)
-    // In a more robust system, we'd do this in one go or batch updates
-    // For now, we'll return the tasks and let the frontend handle the mapping if needed,
-    // OR we can do a quick update pass here.
-    
-    return reply.send({ project, tasks: createdTasks });
   }
 }
