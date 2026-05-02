@@ -93,6 +93,16 @@ export class DrizzleTaskRepository implements ITaskRepository {
     return !!row;
   }
 
+  async findByProject(projectId: string): Promise<Task[]> {
+    const rows = await db
+      .select()
+      .from(tasks)
+      .where(eq(tasks.projectId, projectId))
+      .orderBy(tasks.createdAt);
+    
+    return rows.map(this.mapRowToTask);
+  }
+
   private mapRowToTask(row: typeof tasks.$inferSelect): Task {
     return {
       id: row.id,

@@ -8,4 +8,5 @@ export default async function projectRoutes(fastify: FastifyInstance) {
   fastify.post('/', controller.create.bind(controller));
   fastify.get('/', controller.list.bind(controller));
   fastify.post('/plan', controller.plan.bind(controller));
+  fastify.get('/:projectId/risk', controller.assessRisk.bind(controller));
 }
