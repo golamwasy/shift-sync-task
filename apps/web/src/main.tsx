@@ -9,11 +9,11 @@ createRoot(document.getElementById('root')!).render(
     <App />
     <Analytics 
       beforeSend={(event: any) => {
-        // Ensure analytics correctly report the public domain when proxied
+        // Ensure analytics correctly report the public domain
         if (event.url.includes('planora-rose.vercel.app')) {
           return {
             ...event,
-            url: event.url.replace('planora-rose.vercel.app', 'golamwasy.dev/projects/planora')
+            url: event.url.replace('planora-rose.vercel.app', 'planora.golamwasy.dev')
           };
         }
         return event;
