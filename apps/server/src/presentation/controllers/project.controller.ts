@@ -46,13 +46,23 @@ export class ProjectController {
       let currentDate = new Date();
       
       for (const taskData of plan.tasks) {
+        const isMeeting = taskData.category?.toLowerCase().includes('meeting') || 
+                         taskData.title?.toLowerCase().includes('meeting') ||
+                         taskData.title?.toLowerCase().includes('sync') ||
+                         taskData.title?.toLowerCase().includes('call');
+        
+        const meetingLink = isMeeting 
+          ? `https://meet.jit.si/planora-${project.id.slice(0, 8)}-${taskData.title.toLowerCase().replace(/\s+/g, '-')}`
+          : undefined;
+
         const task = await this.createTaskUseCase.execute({
           title: taskData.title,
           category: taskData.category,
           status: 'todo',
           userId: userId,
           projectId: project.id,
-          scheduledAt: new Date(currentDate), // Assign current schedule point
+          scheduledAt: new Date(currentDate),
+          meetingLink: meetingLink,
         });
         createdTasks.push(task);
         

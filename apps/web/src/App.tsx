@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Task, Project } from '@shift-sync/shared';
-import { X, Loader2, AlertCircle, CalendarRange, Sparkles, Brain, LayoutGrid, ListTodo, TrendingUp, BarChart3, Clock, AlertTriangle } from 'lucide-react';
+import { X, Loader2, AlertCircle, CalendarRange, Sparkles, Brain, LayoutGrid, ListTodo, TrendingUp, BarChart3, Clock, AlertTriangle, BookOpen } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import * as ics from 'ics';
 import { api } from './lib/api';
@@ -176,6 +176,15 @@ function App() {
     : tasks;
   return (
     <div className="app-viewport">
+      {/* Docs Button */}
+      <a 
+        href="/docs" 
+        className="fixed top-6 right-6 z-[110] bg-white text-slate-900 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-2xl transition-all flex items-center gap-2 border border-white/20 hover:scale-105 active:scale-95 group"
+      >
+        <BookOpen className="w-3.5 h-3.5 text-indigo-600 transition-transform group-hover:rotate-12" />
+        Docs
+      </a>
+
       {/* Thinking Overlay */}
       {isThinking && (
         <div className="thinking-overlay">

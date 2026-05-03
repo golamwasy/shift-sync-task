@@ -124,7 +124,7 @@ nav.scrolled {
 /* Hero Section */
 .hero {
     position: relative;
-    padding: 200px 24px 120px;
+    padding: 140px 24px 80px;
     text-align: center;
     overflow: hidden;
 }
@@ -221,14 +221,14 @@ nav.scrolled {
 
 /* Sections */
 section {
-    padding: 120px 24px;
+    padding: 80px 24px;
     max-width: 1200px;
     margin: 0 auto;
 }
 
 .section-header {
     text-align: center;
-    margin-bottom: 80px;
+    margin-bottom: 48px;
     max-width: 800px;
     margin-left: auto;
     margin-right: auto;
@@ -250,7 +250,7 @@ section {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
-    margin-top: 60px;
+    margin-top: 40px;
 }
 
 .workflow-card {
@@ -293,7 +293,7 @@ section {
 /* Features Grid */
 .grid-3 {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 32px;
 }
 
@@ -405,7 +405,7 @@ section {
 
 /* Tech List */
 .tech-strip {
-    padding: 100px 0;
+    padding: 60px 0;
     display: flex;
     justify-content: space-around;
     gap: 40px;
@@ -422,8 +422,8 @@ section {
 
 /* CTA */
 .cta-section {
-    margin: 100px auto;
-    padding: 100px 40px;
+    margin: 60px auto;
+    padding: 60px 40px;
     background: linear-gradient(135deg, var(--primary), #818cf8);
     border-radius: 40px;
     text-align: center;

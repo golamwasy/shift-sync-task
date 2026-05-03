@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planora | Intelligent Project Orchestration & AI Risk Analysis</title>
+    <meta name="description"
+        content="Enterprise-grade project planning and task orchestration powered by Gemini 3.1. Featuring automated AI risk assessment, Gantt charts, and secure Jitsi meetings.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="calendar-range" style="width: 22px; height: 22px;"></i>
+                </div>
+                <span class="logo-text">Planora</span>
+            </a>
+            <div class="nav-links">
+                <a href="#quick-start" class="nav-link">Guide</a>
+                <a href="#workflow" class="nav-link">Workflow</a>
+                <a href="#features" class="nav-link">Platform</a>
+                <a href="#architecture" class="nav-link">Architecture</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="reveal">
+                <h1>Strategic scheduling, <span>engineered</span> for precision.</h1>
+                <p>Planora transforms complex project intent into synchronized multi-task pipelines with automated risk
+                    analysis and isolated browser-level persistence.</p>
+                <div style="display: flex; gap: 16px; justify-content: center;">
+                    <a href="#quick-start" class="btn-primary">
+                        Get Started <i data-lucide="arrow-down" style="width: 18px;"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="quick-start"
+            style="padding-top: 0; background: white; border-radius: 60px; margin: -20px auto 20px; max-width: 1200px; padding: 60px 40px; box-shadow: var(--shadow-premium); border: 1px solid var(--border-light);">
+            <div class="section-header reveal">
+                <span class="badge">Guide</span>
+                <h2>How to Orchestrate</h2>
+                <p>Planora is designed for speed. Follow these steps to master your first project.</p>
+            </div>
+
+            <div class="grid-3">
+                <div class="card reveal" style="text-align: center;">
+                    <div
+                        style="background: var(--primary-surface); width: 60px; height: 60px; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; color: var(--primary);">
+                        <i data-lucide="terminal" style="width: 28px; height: 28px;"></i>
+                    </div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 12px;">1. Describe Intent</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Type naturally. Tell Planora what you need
+                        to achieve, like "Plan a 2-week app launch with daily standups."</p>
+                </div>
+                <div class="card reveal" style="text-align: center; transition-delay: 0.1s;">
+                    <div
+                        style="background: var(--primary-surface); width: 60px; height: 60px; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; color: var(--primary);">
+                        <i data-lucide="sparkles" style="width: 28px; height: 28px;"></i>
+                    </div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 12px;">2. Review & Refine</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">The AI will architect the project structure,
+                        schedule tasks, and assess risks instantly for your review.</p>
+                </div>
+                <div class="card reveal" style="text-align: center; transition-delay: 0.2s;">
+                    <div
+                        style="background: var(--primary-surface); width: 60px; height: 60px; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; color: var(--primary);">
+                        <i data-lucide="zap" style="width: 28px; height: 28px;"></i>
+                    </div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 12px;">3. Execute & Sync</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Launch Jitsi meetings, sync tasks to your
+                        calendar, and track progress through the unified dashboard.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 60px; padding: 40px; background: var(--bg-subtle); border-radius: 32px; text-align: center;"
+                class="reveal">
+                <h4 style="margin-bottom: 16px; color: var(--secondary);">Pro Tip: Natural Date Awareness</h4>
+                <p style="font-size: 0.95rem; color: var(--text-muted); max-width: 600px; margin: 0 auto;">Planora
+                    understands relative dates. Try saying <code
+                        style="background: white; padding: 4px 8px; border-radius: 6px; color: var(--primary); font-family: 'JetBrains Mono'; font-size: 0.85rem;">"tomorrow morning"</code>,
+                    <code
+                        style="background: white; padding: 4px 8px; border-radius: 6px; color: var(--primary); font-family: 'JetBrains Mono'; font-size: 0.85rem;">"next Friday at 4pm"</code>,
+                    or <code
+                        style="background: white; padding: 4px 8px; border-radius: 6px; color: var(--primary); font-family: 'JetBrains Mono'; font-size: 0.85rem;">"in two weeks"</code>.
+                </p>
+            </div>
+        </section>
+
+        <section id="workflow">
+            <div class="section-header reveal">
+                <span class="badge">The Experience</span>
+                <h2>How Planora Orchestrates</h2>
+                <p>A seamless transition from conversational intent to enterprise-grade project execution.</p>
+            </div>
+
+            <div class="workflow-grid reveal">
+                <div class="workflow-card">
+                    <div class="workflow-number">01</div>
+                    <div class="workflow-icon"><i data-lucide="message-square"></i></div>
+                    <h3>Intent Entry</h3>
+                    <p>Input your project goals in natural language. Planora's neural layer extracts complex multi-task
+                        structures instantly.</p>
+                </div>
+                <div class="workflow-card">
+                    <div class="workflow-number">02</div>
+                    <div class="workflow-icon"><i data-lucide="shield-alert"></i></div>
+                    <h3>Risk Assessment</h3>
+                    <p>Automated AI risk scoring evaluates task complexity and potential bottlenecks before you even
+                        commit.</p>
+                </div>
+                <div class="workflow-card">
+                    <div class="workflow-number">03</div>
+                    <div class="workflow-icon"><i data-lucide="layers"></i></div>
+                    <h3>Batch Review</h3>
+                    <p>Review the generated task pipeline in a high-fidelity dashboard. Adjust, refine, and commit in
+                        one single sync.</p>
+                </div>
+                <div class="workflow-card">
+                    <div class="workflow-number">04</div>
+                    <div class="workflow-icon"><i data-lucide="lock"></i></div>
+                    <h3>Secure Isolation</h3>
+                    <p>Tasks are stored with browser-level session isolation. Your data never leaks between devices or
+                        sessions.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="interface"
+            style="background: var(--bg-subtle); border-radius: 60px; margin: 20px auto; max-width: 1300px; padding: 60px 40px;">
+            <div class="showcase-grid reveal">
+                <div>
+                    <span class="badge" style="background: white;">Dashboard</span>
+                    <h2 style="font-size: 2.8rem; margin-top: 16px;">Unified Control Center</h2>
+                    <p style="font-size: 1.1rem; color: var(--text-muted); margin: 24px 0 40px;">Manage projects with
+                        advanced Gantt charts, workload distribution analytics, and integrated meeting triggers.</p>
+
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="display: flex; gap: 12px; margin-bottom: 16px; align-items: center;">
+                            <div style="color: var(--primary);"><i data-lucide="check-circle-2"></i></div>
+                            <span>Real-time Gantt Visualization</span>
+                        </li>
+                        <li style="display: flex; gap: 12px; margin-bottom: 16px; align-items: center;">
+                            <div style="color: var(--primary);"><i data-lucide="check-circle-2"></i></div>
+                            <span>AI-Powered Priority Scoring</span>
+                        </li>
+                        <li style="display: flex; gap: 12px; align-items: center;">
+                            <div style="color: var(--primary);"><i data-lucide="check-circle-2"></i></div>
+                            <span>Instant Jitsi Meeting Provisioning</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="showcase-img-container" style="position: relative;">
+                    <img src="planora.png" alt="Planora Dashboard" class="showcase-img">
+                    <div class="glass"
+                        style="position: absolute; bottom: -20px; right: -20px; padding: 20px; border-radius: 16px; box-shadow: var(--shadow-premium);">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <div style="background: #10b981; width: 10px; height: 10px; border-radius: 50%;"></div>
+                            <span style="font-weight: 700; font-size: 0.8rem;">AI SYNC ACTIVE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features">
+            <div class="section-header reveal">
+                <span class="badge">Capability</span>
+                <h2>Engineered for Enterprise</h2>
+                <p>Beyond simple task management. A complete ecosystem for modern delivery.</p>
+            </div>
+
+            <div class="grid-3">
+                <div class="card reveal">
+                    <div class="card-icon"><i data-lucide="brain-circuit"></i></div>
+                    <h3>Gemini 3.1 Intelligence</h3>
+                    <p>Leveraging state-of-the-art LLMs for precise intent resolution and automated schema mapping of
+                        multi-event inputs.</p>
+                </div>
+                <div class="card reveal" style="transition-delay: 0.1s;">
+                    <div class="card-icon"><i data-lucide="video"></i></div>
+                    <h3>Native Meetings</h3>
+                    <p>Instantly spawn secure Jitsi video rooms directly from your task dashboard. Collaborate where you
+                        plan.</p>
+                </div>
+                <div class="card reveal" style="transition-delay: 0.2s;">
+                    <div class="card-icon"><i data-lucide="bar-chart-3"></i></div>
+                    <h3>Risk Analytics</h3>
+                    <p>Sophisticated risk assessment engine that highlights potential project slippage and dependency
+                        bottlenecks.</p>
+                </div>
+                <div class="card reveal">
+                    <div class="card-icon"><i data-lucide="fingerprint"></i></div>
+                    <h3>Private Sandbox</h3>
+                    <p>Session-based isolation ensures zero data leakage. Persistent local identification allows for
+                        "login-free" privacy.</p>
+                </div>
+                <div class="card reveal" style="transition-delay: 0.1s;">
+                    <div class="card-icon"><i data-lucide="git-branch"></i></div>
+                    <h3>Clean DDD Architecture</h3>
+                    <p>Built with Domain-Driven Design principles, ensuring a robust, testable, and maintainable
+                        enterprise codebase.</p>
+                </div>
+                <div class="card reveal" style="transition-delay: 0.2s;">
+                    <div class="card-icon"><i data-lucide="refresh-cw"></i></div>
+                    <h3>Batch Orchestration</h3>
+                    <p>Never add tasks one-by-one again. Orchestrate entire project timelines through a single natural
+                        language input.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="documentation" style="background: white; padding-top: 40px;">
+            <div class="section-header reveal">
+                <span class="badge">Documentation</span>
+                <h2>Technical Foundations</h2>
+                <p>Understanding the core principles that drive Planora's reliability.</p>
+            </div>
+
+            <div class="grid-3 reveal">
+                <div>
+                    <h4 style="margin-bottom: 16px; color: var(--primary);">Privacy-First Isolation</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-muted);">Unlike traditional SaaS, Planora uses a
+                        decentralized identification system. Each browser session is assigned a unique, persistent hash
+                        that isolates your task data at the database level, ensuring zero cross-user leakage without
+                        requiring a manual login.</p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 16px; color: var(--primary);">Relative Temporal Logic</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-muted);">Our temporal engine enriches AI prompts
+                        with the current user's local time and timezone metadata. This allows Gemini to resolve complex
+                        relative dates like "next Tuesday" or "in three days" with 99.9% accuracy.</p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 16px; color: var(--primary);">Clean DDD Architecture</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-muted);">The codebase is strictly organized into
+                        Domain, Application, and Infrastructure layers. This ensures that the core business
+                        logic—orchestration and risk scoring—remains decoupled from external AI providers and database
+                        drivers.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 80px;" class="reveal">
+                <div
+                    style="max-width: 800px; margin: 0 auto; background: var(--bg-subtle); padding: 40px; border-radius: 32px;">
+                    <h3 style="margin-bottom: 32px; text-align: center;">Frequently Asked Questions</h3>
+                    <div style="display: grid; gap: 24px;">
+                        <div>
+                            <h5 style="margin-bottom: 8px; font-weight: 700;">Is my data shared with the AI?</h5>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Only the natural language input is
+                                sent to Gemini for orchestration. No personal identifying information or existing task
+                                history is shared, preserving your privacy.</p>
+                        </div>
+                        <div style="border-top: 1px solid var(--border-light); padding-top: 24px;">
+                            <h5 style="margin-bottom: 8px; font-weight: 700;">How does the Risk Assessment work?</h5>
+                            <p style="font-size: 0.9rem; color: var(--text-muted);">Planora analyzes task dependencies,
+                                estimated duration, and potential resource conflicts to provide a 'Complexity Score' for
+                                every project committed.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture">
+            <div class="pipeline-container reveal" style="padding: 60px 40px;">
+                <div class="pipeline-content">
+                    <span class="badge"
+                        style="background: rgba(255,255,255,0.1); color: white; border: none;">Architecture</span>
+                    <h2>The Intelligent Pipeline</h2>
+                    <p style="opacity: 0.7; margin-bottom: 40px;">A high-performance bridge between conversation and
+                        data.</p>
+
+                    <div class="step-item">
+                        <div class="step-dot"></div>
+                        <div>
+                            <h4>Temporal Contextualization</h4>
+                            <p style="opacity: 0.7; font-size: 0.9rem;">Enriching raw input with metadata to ensure
+                                precise relative date resolution (e.g., "next Friday").</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-dot"></div>
+                        <div>
+                            <h4>Neural Extraction</h4>
+                            <p style="opacity: 0.7; font-size: 0.9rem;">Multi-pass processing via Gemini for
+                                high-fidelity schema mapping and risk detection.</p>
+                        </div>
+                    </div>
+                    <div class="step-item" style="margin-bottom: 0;">
+                        <div class="step-dot"></div>
+                        <div>
+                            <h4>Atomic Persistence</h4>
+                            <p style="opacity: 0.7; font-size: 0.9rem;">Transactional commits to PostgreSQL with
+                                browser-specific namespaces for total privacy.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-window">
+                    <div class="code-header">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                        <span style="font-size: 0.7rem; opacity: 0.5; margin-left: 10px;">orchestrator.ts</span>
+                    </div>
+                    <div class="code-body">
+                        <span style="color: #c678dd;">async</span> <span
+                            style="color: #61afef;">orchestrate</span>(input: <span
+                            style="color: #e5c07b;">string</span>) {<br>
+                        &nbsp;&nbsp;<span style="color: #5c6370;">// 1. Enrich & Contextualize</span><br>
+                        &nbsp;&nbsp;<span style="color: #c678dd;">const</span> context = <span
+                            style="color: #c678dd;">await</span> <span
+                            style="color: #e06c75;">this</span>.getTemporalContext();<br><br>
+                        &nbsp;&nbsp;<span style="color: #5c6370;">// 2. Multi-pass AI Extraction</span><br>
+                        &nbsp;&nbsp;<span style="color: #c678dd;">const</span> tasks = <span
+                            style="color: #c678dd;">await</span> Gemini.<span
+                            style="color: #e06c75;">extract</span>(input, context);<br><br>
+                        &nbsp;&nbsp;<span style="color: #5c6370;">// 3. Isolated Review State</span><br>
+                        &nbsp;&nbsp;<span style="color: #c678dd;">return</span> <span
+                            style="color: #e06c75;">this</span>.store.prepareSync(tasks);<br>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tech-strip reveal">
+            <span class="tech-item" style="font-size: 1.2rem;">REACT</span>
+            <span class="tech-item" style="font-size: 1.2rem;">TYPESCRIPT</span>
+            <span class="tech-item" style="font-size: 1.2rem;">FASTIFY</span>
+            <span class="tech-item" style="font-size: 1.2rem;">DRIZZLE</span>
+            <span class="tech-item" style="font-size: 1.2rem;">POSTGRESQL</span>
+            <span class="tech-item" style="font-size: 1.2rem;">GEMINI 3.1</span>
+        </section>
+    </main>
+
+    <footer style="padding: 40px 24px; border-top: 1px solid var(--border-light); text-align: center;">
+        <div
+            style="display: flex; align-items: center; justify-content: center; gap: 12px; opacity: 0.8; flex-wrap: wrap;">
+            <div
+                style="background: var(--secondary); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white;">
+                <i data-lucide="calendar-range" style="width: 16px; height: 16px;"></i>
+            </div>
+            <span
+                style="font-weight: 800; font-family: 'Plus Jakarta Sans'; font-size: 1.1rem; color: var(--secondary);">Planora</span>
+            <span style="color: var(--text-muted); font-size: 0.9rem; margin-left: 12px;">&copy; 2026 Planora AI
+                Orchestration. Built for precision.</span>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Scroll Navbar Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Reveal Animation
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                if (elementTop < windowHeight - 50) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal();
+    </script>
+</body>
+
+</html>

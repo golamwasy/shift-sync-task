@@ -9,6 +9,7 @@ export interface CreateTaskDTO {
   userId: string;
   projectId?: string;
   dependsOn?: string[];
+  meetingLink?: string;
 }
 
 export class CreateTaskUseCase {

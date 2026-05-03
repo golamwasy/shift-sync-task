@@ -4,6 +4,10 @@ A cross-platform task management system with an **AI-powered natural language co
 
 > "Call Alice tomorrow at 10am about the quarterly review" → Creates a task with title, category, and scheduled time — all parsed by Gemini.
 
+### 🚀 [Explore the Interactive Showcase](https://planora.golamwasy.dev/docs)
+
+Experience the strategic orchestration engine, AI risk analysis, and automated meeting provisioning in our dedicated showcase.
+
 ## Tech Stack
 
 | Layer | Technology |

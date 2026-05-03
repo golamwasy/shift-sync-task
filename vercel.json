@@ -6,6 +6,14 @@
       "destination": "/api"
     },
     {
+      "source": "/docs",
+      "destination": "/apps/web/public/docs/index.html"
+    },
+    {
+      "source": "/docs/(.*)",
+      "destination": "/apps/web/public/docs/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/apps/web/$1"
     }
